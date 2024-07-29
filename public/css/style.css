@@ -104,6 +104,13 @@ body {
   border: none !important;
 }
 
+.edit-img {
+  width: 100% !important;
+  object-fit: cover !important;
+  height: 25vh;
+  width: 40vh !important;
+}
+
 /* Show page */
 .show-img {
   height: 30vh;
@@ -116,4 +123,10 @@ body {
 .show-card {
   padding-left: 0;
   padding-right: 0;
+}
+
+/* MAP */
+#map {
+  height: 400px;
+  width: 80vh;
 }

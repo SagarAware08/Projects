@@ -36,8 +36,13 @@
       </div>
 
       <div class="mb-3">
+        Original Listing Image <br />
+        <img src="<%= originalImageUrl %>" class="edit-img" />
+      </div>
+
+      <div class="mb-3">
         <label for="image" class="form-label">Upload New Image</label>
-        <input name="listing[image][url]" class="form-control" type="file" />
+        <input name="listing[image]" class="form-control" type="file" />
         <div class="invalid-feedback">Please enter a valid url</div>
       </div>
 

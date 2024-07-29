@@ -36,8 +36,8 @@
 </div>
 <% } %>
 <div class="col-8 offset-3">
-  <hr />
   <% if(currUser) { %>
+  <hr />
   <h4>Leave a Review</h4>
   <form
     class="mb-3 needs-validation"
@@ -45,17 +45,6 @@
     action="/listings/<%= listing.id %>/reviews"
     novalidate
   >
-    <!-- <div class="mb-3 mt-3">
-      <label for="rating" class="form-label">Rating</label>
-      <input
-        type="range"
-        min="1"
-        max="5"
-        id="rating"
-        name="review[rating]"
-        class="form-range"
-      /> -->
-
     <div class="mb-3 mt-3">
       <label for="rating" class="form-label">Rating</label>
       <fieldset class="starability-slot">
@@ -98,9 +87,9 @@
   <% } %>
 
   <hr />
-
-  <p><b>All Reviews</b></p>
+  <% if(listing.reviews.length > 0) { %>
   <div class="row">
+    <p><b>All Reviews</b></p>
     <% for(review of listing.reviews) { %>
     <div class="card col-5 ms-3 mb-3">
       <div class="card-body">
@@ -123,4 +112,21 @@
     </div>
     <% } %>
   </div>
+  <% } %>
 </div>
+<div class="col-8 offset-3 mb-3">
+  <h3>Where you'll be</h3>
+  <div id="map"></div>
+</div>
+
+<script>
+  let mapToken = "<%= process.env.MAP_TOKEN %>";
+  console.log(mapToken);
+  mapboxgl.accessToken = mapToken;
+
+  const map = new mapboxgl.Map({
+    container: "map", // container ID
+    center: [-74.5, 40], // starting position [lng, lat]. Note that lat must be set between -90 and 90
+    zoom: 9, // starting zoom
+  });
+</script>
