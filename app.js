@@ -52,9 +52,9 @@ const sessionOptions = {
   },
 };
 
-app.get("/", (req, res) => {
-  res.send("Hi, i am root");
-});
+// app.get("/", (req, res) => {
+//   res.send("Hi, i am root");
+// });
 
 app.use(session(sessionOptions));
 app.use(flash());
@@ -73,18 +73,6 @@ app.use((req, res, next) => {
   console.log(res.locals.success);
   next();
 });
-
-// app.get("/demouser", async (req, res) => {
-//   let fakeUser = new User({
-//     email: "student@gmail.com",
-//     username: "Delta-student",
-//   });
-
-//   // pbkdf2 hashing a;lgorithem is used
-
-//   let registeredUser = await User.register(fakeUser, "hellouser");
-//   res.send(registeredUser);
-// });
 
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
