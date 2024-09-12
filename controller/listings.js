@@ -68,19 +68,57 @@ module.exports.renderEditForm = async (req, res) => {
   res.render("./listings/edit.ejs", { listing, originalImageUrl });
 };
 
-module.exports.updatelisting = async (req, res) => {
-  console.log(req.params);
-  let { id } = req.params;
-  let listing = await Listing.findByIdAndUpdate(id, { ...req.body.listing });
+// module.exports.updatelisting = async (req, res) => {
+//   console.log(req.params);
+//   let { id } = req.params;
+//   let listing = await Listing.findByIdAndUpdate(id, { ...req.body.listing });
 
-  if (typeof req.file !== "undefined") {
+//   if (typeof req.file !== "undefined") {
+//     let url = req.file.path;
+//     let filename = req.file.filename;
+//     listing.image = { url, filename };
+//     await listing.save();
+//   }
+
+//   req.flash("success", "Listing updated");
+//   res.redirect(`/listings/${id}`);
+// };
+
+module.exports.updatelisting = async (req, res, next) => {
+  const id = req.params.id;
+
+  // Update the listing with the new data
+  let temp = await Listing.findByIdAndUpdate(
+    id,
+    { ...req.body.listing },
+    { new: true }
+  );
+
+  // Update the image if a new one is provided
+  if (req.file) {
     let url = req.file.path;
     let filename = req.file.filename;
-    listing.image = { url, filename };
-    await listing.save();
+    temp.image = { url, filename };
   }
 
-  req.flash("success", "Listing updated");
+  // Geocode the new location to get the coordinates
+  if (req.body.listing.location) {
+    let response = await geoCodingClient
+      .forwardGeocode({
+        query: req.body.listing.location,
+        limit: 1,
+      })
+      .send();
+
+    if (response.body.features.length > 0) {
+      temp.geometry = response.body.features[0].geometry;
+    }
+  }
+  console.log(temp);
+  // Save the updated listing
+  await temp.save();
+
+  req.flash("success", "Listing Updated!");
   res.redirect(`/listings/${id}`);
 };
 

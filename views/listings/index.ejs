@@ -1,9 +1,6 @@
 <% layout('/layouts/boilerplate'); %>
+
 <body>
-  <!-- <h3>All Listings</h3> -->
-  <!-- <form method="GET" action="/listings/new">
-    <button>Create New Lisitng</button>
-  </form> -->
   <style>
     #filters {
       display: flex;
@@ -39,6 +36,10 @@
       margin-left: 2rem;
       display: flex;
       align-items: center;
+    }
+
+    .hidden {
+      display: none;
     }
   </style>
 
@@ -98,17 +99,59 @@
           role="switch"
           id="flexSwitchCheckDefault"
         />
-        <label class="form-check-label" for="flexSwitchCheckDefault"
-          >Display total after taxes</label
-        >
+        <label class="form-check-label" for="flexSwitchCheckDefault">
+          Display total after taxes
+        </label>
       </div>
     </div>
+  </div>
+
+  <div class="btn-group">
+    <button
+      type="button"
+      class="btn btn-danger dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-expanded="false"
+    >
+      Category
+    </button>
+    <ul class="dropdown-menu">
+      <li><a class="dropdown-item" href="#" data-category="all">All</a></li>
+      <li>
+        <a class="dropdown-item" href="#" data-category="mountains"
+          >Mountains</a
+        >
+      </li>
+      <li><a class="dropdown-item" href="#" data-category="rooms">Rooms</a></li>
+      <li>
+        <a class="dropdown-item" href="#" data-category="iconic_cities"
+          >Iconic Cities</a
+        >
+      </li>
+      <li>
+        <a class="dropdown-item" href="#" data-category="castles">Castles</a>
+      </li>
+      <li>
+        <a class="dropdown-item" href="#" data-category="amazing_pools"
+          >Amazing Pools</a
+        >
+      </li>
+      <li>
+        <a class="dropdown-item" href="#" data-category="camping">Camping</a>
+      </li>
+      <li><a class="dropdown-item" href="#" data-category="farm">Farm</a></li>
+      <li>
+        <a class="dropdown-item" href="#" data-category="arctic">Arctic</a>
+      </li>
+      <li><a class="dropdown-item" href="#" data-category="domes">Domes</a></li>
+      <li><a class="dropdown-item" href="#" data-category="boats">Boats</a></li>
+    </ul>
   </div>
 
   <div class="row row-cols-lg-3 row-cols-md-3 mt-3 row-cols-sm-1">
     <% for(let listing of allListings) { %>
     <a
-      class="listing-link"
+      class="listing-link listing-item <%= listing.category.replace(/\s+/g, '_').toLowerCase() %>"
       href="/listings/<%= listing._id %>"
       style="text-decoration: none; color: #000"
     >
@@ -122,9 +165,9 @@
         <div class="card-img-overlay"></div>
         <div class="card-body">
           <p class="card-text">
-            <b><%= listing.title %></b> <br />
-            &#8377;<%= listing.price?listing.price.toLocaleString("en-IN"):'N/A'
-            %>/ night
+            <b> <%= listing.title %> </b> <br />
+            &#8377;<%= listing.price ? listing.price.toLocaleString("en-IN") :
+            'N/A' %>/ night
             <i class="tax-info"> &nbsp; &nbsp; +18 GST </i>
           </p>
         </div>
@@ -134,16 +177,32 @@
   </div>
 
   <script>
-    let taxSwitch = document.getElementById("flexSwitchCheckDefault");
-    taxSwitch.addEventListener("click", () => {
-      let taxInfo = document.getElementsByClassName("tax-info");
-      for (info of taxInfo) {
-        if (info.style.display != "inline") {
-          info.style.display = "inline";
-        } else {
-          info.style.display = "none";
+    document.addEventListener("DOMContentLoaded", function () {
+      let taxSwitch = document.getElementById("flexSwitchCheckDefault");
+      taxSwitch.addEventListener("click", () => {
+        let taxInfo = document.getElementsByClassName("tax-info");
+        for (let info of taxInfo) {
+          info.style.display =
+            info.style.display === "inline" ? "none" : "inline";
         }
-      }
+      });
+
+      let dropdownItems = document.querySelectorAll(".dropdown-item");
+      dropdownItems.forEach((item) => {
+        item.addEventListener("click", function (e) {
+          e.preventDefault();
+          let category = this.getAttribute("data-category");
+          let allListings = document.querySelectorAll(".listing-item");
+
+          allListings.forEach((listing) => {
+            if (category === "all" || listing.classList.contains(category)) {
+              listing.classList.remove("hidden");
+            } else {
+              listing.classList.add("hidden");
+            }
+          });
+        });
+      });
     });
   </script>
 </body>
